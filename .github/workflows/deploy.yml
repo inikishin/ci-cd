@@ -9,19 +9,23 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: echo "Lint service..."
+      - run: make lint
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - run: echo "Testing service..."
+      - run: make test
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - run: echo "Build service..."
       - run: echo "Push service to hub..."
+      - run: make build
   restart:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - run: echo "Restart service..."
+      - run: make deploy

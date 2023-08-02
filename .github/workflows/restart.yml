@@ -7,3 +7,4 @@ jobs:
       - uses: actions/checkout@v3
       - run: echo "Hello world"
       - run: ls -lah
+      - run: make restart
