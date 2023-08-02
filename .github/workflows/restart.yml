@@ -1,5 +1,4 @@
 name: restart
-on: [workflow_call]
 jobs:
   restart:
     runs-on: ubuntu-latest
