@@ -1,4 +1,4 @@
-name: restart
+name: restart-service
 on: [workflow_dispatch]
 jobs:
   restart:
@@ -6,3 +6,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: echo "Hello world"
+      - run: ls -lah
