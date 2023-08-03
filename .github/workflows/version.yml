@@ -5,11 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: echo "$VER_BUILD"
-        env:
-          VER_BUILD: ${{ vars.VER_BUILD }}
       - name: Get tags
         run: git fetch --tags origin
       - name: Tags
         run: git tag -l
-          
+      - name: Tags 1
+        run: git describe -tags
