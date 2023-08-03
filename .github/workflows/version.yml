@@ -5,15 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get tags
+      - name: fetch tags
         run: git fetch --tags origin
-      - name: Tags
-        run: git tag -l
-      - name: Tags 1
-        run: git tag --sort=-version:refname | head -n 1
-      - name: Set RELEASE_VERSION env
+      - name: set RELEASE_VERSION env
         run: echo "RELEASE_VERSION="$(git tag --sort=-version:refname | head -n 1)"" >> $GITHUB_ENV
-      - name: Tags 3
+      - name: check RELEASE_VERSION
         run: echo $RELEASE_VERSION
-      - name: Tags 4
-        run: echo ${{ env.RELEASE_VERSION }}
