@@ -11,7 +11,9 @@ jobs:
         run: git tag -l
       - name: Tags 1
         run: git tag --sort=-version:refname | head -n 1
-      - name: Tags 2
-        run: export VER="$(git tag --sort=-version:refname | head -n 1)"
+      - name: Set RELEASE_VERSION env
+        run: echo "RELEASE_VERSION="$(git tag --sort=-version:refname | head -n 1)"" >> $GITHUB_ENV
       - name: Tags 3
-        run: echo $VER
+        run: echo $RELEASE_VERSION
+      - name: Tags 4
+        run: echo ${{ env.RELEASE_VERSION }}
