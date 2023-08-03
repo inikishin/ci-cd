@@ -8,3 +8,8 @@ jobs:
       - run: echo "$VER_BUILD"
         env:
           VER_BUILD: ${{ vars.VER_BUILD }}
+      - name: Get tags
+        run: git fetch --tags origin
+      - name: Tags
+        run: git tag -l
+          
