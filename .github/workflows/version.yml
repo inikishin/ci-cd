@@ -10,4 +10,4 @@ jobs:
       - name: Tags
         run: git tag -l
       - name: Tags 1
-        run: git describe -tags
+        run: git describe --tags
