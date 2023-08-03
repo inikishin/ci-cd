@@ -12,6 +12,6 @@ jobs:
       - name: Tags 1
         run: git tag --sort=-version:refname | head -n 1
       - name: Tags 2
-        run: export VER=(git tag --sort=-version:refname | head -n 1)
+        run: export VER="$(git tag --sort=-version:refname | head -n 1)"
       - name: Tags 3
         run: echo $VER
