@@ -1,10 +1,46 @@
 name: restart-service
-on: [workflow_dispatch]
+on:
+  workflow_call:
+    inputs:
+      ssh_user:
+        description: 'user name for ssh connections to host'
+        type: string
+        required: true
+      ssh_host:
+        description: 'host for ssh connection'
+        type: string
+        required: true
+      ssh_project_path:
+        description: 'project root folder at remote server with Makefile'
+        type: string
+        required: true
+    secrets:
+      ssh_key:
+        description: 'server private key text for ssh connections to host'
+        required: true
 jobs:
   restart:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: echo "Hello world"
-      - run: ls -lah
-      - run: make restart
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >> ~/.ssh/config <<END
+          Host staging
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ inputs.ssh_user }}
+          SSH_KEY: ${{ secrets.ssh_key }}
+          SSH_HOST: ${{ inputs.ssh_host }}
+      - name: Restart service
+        run: |
+          echo "cd $SSH_PROJECT_PATH && make run" > run.sh
+          ssh staging 'bash -s' < run.sh
+        env:
+          SSH_PROJECT_PATH: ${{ inputs.ssh_project_path }}
