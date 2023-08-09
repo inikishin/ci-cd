@@ -2,40 +2,26 @@ name: deploy-service
 on:
   push:
     branches:
-      - 'master'
+      - master
 jobs:
   lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: echo "Lint service..."
-      - run: make lint
+    uses: inikishin/ci-cd/.github/workflows/lint.yml@master
   test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: echo "Testing service..."
-      - run: make test
+    uses: inikishin/ci-cd/.github/workflows/test.yml@master
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: echo "Build service..."
-      - name: Get tags
-        run: git fetch --tags origin
-      - name: Get last tag
-        run: git describe --tags
-      - name: Set RELEASE_VERSION env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - name: Test
-        run: |
-          echo $RELEASE_VERSION
-          echo ${{ env.RELEASE_VERSION }}
-      - run: echo "Push service to hub..."
-      - run: make build
+    needs: [lint, test]
+    uses: inikishin/ci-cd/.github/workflows/build.yml@master
+    with:
+      hub_user: ${{ vars.HUB_USER }}
+      hub_host: ${{ vars.HUB_HOST }}
+    secrets:
+      hub_pass: ${{ secrets.HUB_PASS }}
   restart:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: echo "Restart service..."
-      - run: make deploy
+    needs: [build]
+    uses: inikishin/ci-cd/.github/workflows/restart.yml@master
+    with:
+      ssh_user: ${{ vars.SSH_USER }}
+      ssh_host: ${{ vars.SSH_HOST }}
+      ssh_project_path: ${{ vars.SSH_PROJECT_PATH }}
+    secrets:
+      ssh_key: ${{ secrets.SSH_PRIVATE_KEY }}
